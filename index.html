@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chao Yi & Yi wen 婚禮邀請函</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Cormorant Garamond & Noto Serif TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght=0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght=300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 圖示 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            morandi: {
+              gold: '#d4a373',      // 暖陽金
+              green: '#8da399',      // 鼠尾草綠
+              sand: '#f4ede4',      // 莫蘭迪暖砂色
+              cream: '#fcfaf7',     // 米白底色
+              dark: '#3d4441',      // 炭木黑
+              lightgreen: '#edf1ef' // 淺綠白
+            }
+          },
+          fontFamily: {
+            serif: ['Cormorant Garamond', 'Noto Serif TC', 'serif'],
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background-color: #fcfaf7;
+      color: #3d4441;
+      overflow-x: hidden;
+    }
+    
+    .font-eng {
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    .no-wrap {
+      white-space: nowrap !important;
+      display: inline-block;
+    }
+
+    .glow-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 12px 30px rgba(212, 163, 115, 0.08);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glow-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(212, 163, 115, 0.15);
+    }
+
+    .glass-nav {
+      background: rgba(253, 250, 247, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(212, 163, 115, 0.08);
+    }
+
+    /* 手風琴與折疊面板動畫優化 (解決 display: none 無法過渡的問題) */
+    .expand-transition {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+      opacity: 0;
+    }
+    .expand-transition-active {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+    .expand-inner {
+      overflow: hidden;
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+      opacity: 0;
+    }
+    .accordion-active .accordion-content {
+      opacity: 1;
+    }
+    .accordion-chevron {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .accordion-active .accordion-chevron {
+      transform: rotate(180deg);
+    }
+
+    .btn-primary {
+      background-color: #d4a373;
+      color: #ffffff;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-primary:hover {
+      background-color: #c29262;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(212, 163, 115, 0.25);
+    }
+
+    @keyframes spin-slow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .animate-spin-slow {
+      animation: spin-slow 8s linear infinite;
+    }
+
+    /* 跑馬燈無縫動畫：確保首尾 gap 完美契合 */
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(calc(-50% - 6px)); } /* 6px 為 gap 的一半，維持完美對齊 */
+    }
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 50s linear infinite;
+    }
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #fcfaf7;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #d4a373;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body class="antialiased select-none">
+
+  <!-- 1. 頂端固定導航列 -->
+  <nav class="glass-nav fixed top-0 left-0 w-full z-50 px-6 py-4 transition-all duration-300">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <a href="#" class="font-eng text-2xl font-light tracking-widest text-morandi-gold hover:opacity-80 transition-opacity">
+        C & Y
+      </a>
+      <!-- 桌上型選單 -->
+      <div class="hidden md:flex space-x-10 text-sm tracking-widest">
+        <a href="#about" class="text-morandi-dark hover:text-morandi-gold transition-colors font-medium">關於我們</a>
+        <a href="#details" class="text-morandi-dark hover:text-morandi-gold transition-colors font-medium">婚禮詳情</a>
+        <a href="#gallery" class="text-morandi-dark hover:text-morandi-gold transition-colors font-medium">婚紗剪影</a>
+        <a href="#rsvp" class="text-morandi-dark hover:text-morandi-gold transition-colors font-semibold border-b border-morandi-gold/30 pb-0.5">出席回函</a>
+      </div>
+      <!-- 行動裝置選單按鈕 -->
+      <button onclick="toggleMobileMenu()" class="block md:hidden text-morandi-dark hover:text-morandi-gold focus:outline-none transition-colors" aria-label="Toggle Menu">
+        <i id="menu-icon" class="fa-solid fa-bars text-xl"></i>
+      </button>
+    </div>
+
+    <!-- 行動裝置下拉選單 -->
+    <div id="mobile-menu" class="hidden md:hidden flex flex-col items-center space-y-6 pt-6 pb-4 mt-2 border-t border-morandi-gold/10 text-sm tracking-widest bg-morandi-cream/95 rounded-2xl shadow-lg">
+      <a href="#about" onclick="toggleMobileMenu()" class="text-morandi-dark hover:text-morandi-gold transition-colors font-medium w-full text-center py-2">關於我們</a>
+      <a href="#details" onclick="toggleMobileMenu()" class="text-morandi-dark hover:text-morandi-gold transition-colors font-medium w-full text-center py-2">婚禮詳情</a>
+      <a href="#gallery" onclick="toggleMobileMenu()" class="text-morandi-dark hover:text-morandi-gold transition-colors font-medium w-full text-center py-2">婚紗剪影</a>
+      <a href="#rsvp" onclick="toggleMobileMenu()" class="text-morandi-dark hover:text-morandi-gold transition-colors font-semibold w-full text-center py-2 text-morandi-gold">出席回函</a>
+    </div>
+  </nav>
+
+  <!-- 2. 全螢幕封面背景 -->
+  <header class="relative h-[100dvh] w-full flex items-end justify-center pb-16 sm:pb-20 md:pb-28 overflow-hidden">
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat scale-100 transition-transform duration-1000"
+         style="background-image: url('https://i.postimg.cc/s2Xyd6pq/DSC07345.jpg');">
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-morandi-cream/100"></div>
+    <div class="relative z-10 text-center text-white px-4 flex flex-col items-center max-w-4xl">
+      <h1 class="font-eng text-4xl sm:text-6xl md:text-8xl font-light tracking-wide mb-6 select-none filter drop-shadow-md">
+        Chao Yi <span class="text-2xl sm:text-3xl md:text-5xl">&amp;</span> Yi wen
+      </h1>
+      <p class="text-sm sm:text-base md:text-xl tracking-widest font-light mb-2 drop-shadow-sm leading-relaxed max-w-md">
+        你的笑容是我最大的寶藏
+      </p>
+      <p class="font-eng text-xs sm:text-sm md:text-base italic tracking-widest opacity-90 font-light drop-shadow-sm mb-12">
+        You are my greatest adventure
+      </p>
+    </div>
+  </header>
+
+  <!-- 3. 關於我們 -->
+  <section id="about" class="py-24 px-4 sm:px-6 md:px-12 bg-morandi-cream relative">
+    <div class="max-w-3xl mx-auto text-center relative z-10">
+      <span class="font-eng text-xs sm:text-sm tracking-[0.3em] text-morandi-gold block mb-3">ABOUT US</span>
+      <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold tracking-widest text-morandi-dark mb-10">關於我們</h2>
+      <div class="p-6 sm:p-8 md:p-12 rounded-3xl bg-white/40 border border-white/60 shadow-sm relative backdrop-blur-sm">
+        <span class="absolute top-2 left-4 text-5xl sm:text-6xl text-morandi-gold/20 font-serif">“</span>
+        <p class="text-sm sm:text-base md:text-lg leading-loose tracking-widest text-stone-600 mb-6 font-light">
+          在無數遠距離的日子，因為有你，才有前進的勇氣。<br>
+          在茫茫人海相遇，在平凡日子裡相愛，毅見鍾情 雯定終身。
+        </p>
+        <span class="absolute bottom-1 right-4 text-5xl sm:text-6xl text-morandi-gold/20 font-serif">”</span>
+        <div class="w-12 h-[1px] bg-morandi-gold/40 mx-auto"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 計時器 -->
+  <section class="py-12 sm:py-16 px-4 bg-morandi-lightgreen/40 border-y border-morandi-gold/10">
+    <div class="max-w-4xl mx-auto text-center">
+      <span class="font-eng text-[10px] sm:text-xs tracking-[0.3em] text-morandi-green block mb-2">SAVING THE DATE</span>
+      <h3 class="text-base sm:text-lg md:text-xl font-light tracking-widest text-morandi-dark mb-8">共同倒數・珍貴時刻</h3>
+      <div class="grid grid-cols-4 gap-2 sm:gap-4 md:gap-6 max-w-3xl mx-auto">
+        <div class="glow-card rounded-xl p-3 sm:p-4 md:p-6 flex items-center justify-center">
+          <span id="days" class="font-eng text-xl sm:text-3xl md:text-5xl font-light text-morandi-gold">00</span>
+          <div class="h-6 sm:h-8 md:h-10 w-[1px] bg-morandi-gold/20 mx-2 sm:mx-3 md:mx-4"></div>
+          <div class="text-left"><span class="block font-eng text-[8px] sm:text-[10px] tracking-wider text-morandi-green uppercase">Days</span><span class="text-[9px] sm:text-xs text-stone-400">天</span></div>
+        </div>
+        <div class="glow-card rounded-xl p-3 sm:p-4 md:p-6 flex items-center justify-center">
+          <span id="hours" class="font-eng text-xl sm:text-3xl md:text-5xl font-light text-morandi-gold">00</span>
+          <div class="h-6 sm:h-8 md:h-10 w-[1px] bg-morandi-gold/20 mx-2 sm:mx-3 md:mx-4"></div>
+          <div class="text-left"><span class="block font-eng text-[8px] sm:text-[10px] tracking-wider text-morandi-green uppercase">Hours</span><span class="text-[9px] sm:text-xs text-stone-400">時</span></div>
+        </div>
+        <div class="glow-card rounded-xl p-3 sm:p-4 md:p-6 flex items-center justify-center">
+          <span id="minutes" class="font-eng text-xl sm:text-3xl md:text-5xl font-light text-morandi-gold">00</span>
+          <div class="h-6 sm:h-8 md:h-10 w-[1px] bg-morandi-gold/20 mx-2 sm:mx-3 md:mx-4"></div>
+          <div class="text-left"><span class="block font-eng text-[8px] sm:text-[10px] tracking-wider text-morandi-green uppercase">Mins</span><span class="text-[9px] sm:text-xs text-stone-400">分</span></div>
+        </div>
+        <div class="glow-card rounded-xl p-3 sm:p-4 md:p-6 flex items-center justify-center">
+          <span id="seconds" class="font-eng text-xl sm:text-3xl md:text-5xl font-light text-morandi-gold">00</span>
+          <div class="h-6 sm:h-8 md:h-10 w-[1px] bg-morandi-gold/20 mx-2 sm:mx-3 md:mx-4"></div>
+          <div class="text-left"><span class="block font-eng text-[8px] sm:text-[10px] tracking-wider text-morandi-green uppercase">Secs</span><span class="text-[9px] sm:text-xs text-stone-400">秒</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 婚禮詳情與地點 -->
+  <section id="details" class="py-24 px-4 sm:px-6 bg-morandi-cream relative">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-12">
+        <span class="font-eng text-xs sm:text-sm tracking-[0.3em] text-morandi-gold block mb-3">WEDDING DETAILS</span>
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold tracking-widest text-morandi-dark">晚宴資訊</h2>
+      </div>
+      <div class="relative border-l border-morandi-gold/20 ml-2 sm:ml-4 md:ml-12 space-y-10">
+        <!-- 時間 -->
+        <div class="relative pl-6 sm:pl-8 md:pl-16">
+          <div class="absolute left-0 top-6 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-morandi-cream border-2 border-morandi-gold -translate-x-1/2 flex items-center justify-center shadow-sm z-10"><div class="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 rounded-full bg-morandi-gold"></div></div>
+          <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-stone-100 hover:shadow-md transition-all">
+            <h3 class="text-lg sm:text-xl md:text-2xl font-bold tracking-wider text-morandi-dark mb-3.5 flex items-center gap-2">
+              <i class="fa-regular fa-clock text-morandi-gold text-base sm:text-lg"></i> 婚禮日期 &amp; 時間
+            </h3>
+            <p class="text-base sm:text-lg md:text-2xl font-bold text-stone-700 tracking-widest mb-3">2026年12月12日 <span class="text-sm sm:text-base md:text-2xl text-morandi-green font-bold ml-1">星期六</span></p>
+            <div class="space-y-1.5 text-sm sm:text-base md:text-lg font-bold text-stone-500 tracking-wider">
+              <p>⏱️ <span class="no-wrap">17:00 入場迎賓</span></p>
+              <p>⏱️ <span class="no-wrap">18:00 典禮正式開始</span></p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-stone-100 text-xs sm:text-sm md:text-base font-bold text-morandi-gold tracking-wider">
+              <p>✨ 備註：婚禮當天設有拍貼機可使用，歡迎大家提早前往合影留念</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 地點 & 交通資訊摺疊面板 -->
+        <div class="relative pl-6 sm:pl-8 md:pl-16">
+          <div class="absolute left-0 top-6 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-morandi-cream border-2 border-morandi-gold -translate-x-1/2 flex items-center justify-center shadow-sm z-10"><div class="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 rounded-full bg-morandi-gold"></div></div>
+          <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-stone-100 hover:shadow-md transition-all space-y-6">
+            <div>
+              <h3 class="text-lg sm:text-xl md:text-2xl font-bold tracking-wider text-morandi-dark mb-3.5 flex items-center gap-2">
+                <i class="fa-solid fa-map-location-dot text-morandi-gold text-base sm:text-lg"></i> 婚禮宴會地點
+              </h3>
+              <p class="text-base sm:text-lg md:text-2xl font-bold text-stone-700 tracking-wider mb-2">
+                <span class="no-wrap">高雄寒軒國際大飯店</span> <span class="no-wrap text-morandi-gold font-bold">6F庭園廳</span>
+              </p>
+              <p class="text-xs sm:text-sm md:text-lg font-bold text-stone-500 tracking-wider flex items-center gap-1 mb-4">
+                <span>地址：<span class="no-wrap">高雄市苓雅區四維三路33號</span></span>
+              </p>
+              
+              <!-- 交通資訊 摺疊面板區域 -->
+              <div class="space-y-3 mt-4 border-t border-stone-100 pt-4">
+                <!-- 交通資訊 摺疊面板 1 -->
+                <div class="accordion-item rounded-xl bg-morandi-lightgreen/40 overflow-hidden border border-morandi-gold/10">
+                  <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center py-3 px-4 text-left focus:outline-none">
+                    <span class="font-bold text-morandi-dark tracking-wider text-xs sm:text-sm md:text-base flex items-center gap-2">
+                      <i class="fa-solid fa-car text-morandi-gold"></i> 停車指引資訊
+                    </span>
+                    <i class="accordion-chevron fa-solid fa-chevron-down text-morandi-gold text-[10px] sm:text-xs"></i>
+                  </button>
+                  <div class="accordion-content">
+                    <div class="p-4 pt-0 text-stone-500 leading-relaxed text-[11px] sm:text-xs md:text-sm space-y-1.5">
+                      <p>🚗 <strong>免費停車：</strong>飯店設有<span class="no-wrap">地下停車場</span>，車位有限先到先停。(<span class="no-wrap">B3F設有電動充電樁</span>，需額外付費)</p>
+                      <p>🅿️ <strong>周邊停車：</strong>如遇館內車位已滿，可至<span class="no-wrap">四維立體停車場</span>。(<span class="no-wrap">每小時NT$30</span>)</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 交通資訊 摺疊面板 2 -->
+                <div class="accordion-item rounded-xl bg-morandi-lightgreen/40 overflow-hidden border border-morandi-gold/10">
+                  <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center py-3 px-4 text-left focus:outline-none">
+                    <span class="font-bold text-morandi-dark tracking-wider text-xs sm:text-sm md:text-base flex items-center gap-2">
+                      <i class="fa-solid fa-train-subway text-morandi-gold"></i> 大眾運輸 &amp; 捷運指引
+                    </span>
+                    <i class="accordion-chevron fa-solid fa-chevron-down text-morandi-gold text-[10px] sm:text-xs"></i>
+                  </button>
+                  <div class="accordion-content">
+                    <div class="p-4 pt-0 text-stone-500 leading-relaxed text-[11px] sm:text-xs md:text-sm space-y-2">
+                      <p>🚇 <strong><span class="no-wrap">高雄捷運</span>：</strong>搭乘捷運至<span class="no-wrap">三多商圈 6 號出口</span>，<span class="no-wrap">步行約 15 分鐘</span>，<span class="no-wrap">轉搭計程車約 5 分鐘</span>。</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 婚紗跑馬燈 (解決邊界 Gap 動畫不流暢問題) -->
+  <section id="gallery" class="py-24 bg-morandi-cream overflow-hidden border-t border-morandi-gold/10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-10">
+        <span class="font-eng text-xs sm:text-sm tracking-[0.3em] text-morandi-gold block mb-2">GALLERY</span>
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold tracking-widest text-morandi-dark">婚紗剪影</h2>
+        <p class="text-[10px] sm:text-xs text-stone-400 mt-2">💡 點擊相片可放大，滑鼠懸浮跑馬燈將自動暫停</p>
+      </div>
+
+      <!-- 跑馬燈外層防溢出容器 -->
+      <div class="relative w-full h-[320px] sm:h-[400px] md:h-[500px] overflow-hidden rounded-3xl shadow-xl bg-black/5">
+        <div class="marquee-track h-full py-2">
+          
+          <!-- 第一組：10張原始照片 -->
+          <div class="flex h-full gap-3 pr-3 shrink-0">
+            <img src="https://i.postimg.cc/bNGrpVpN/LINE-ALBUM-2026626-260626-10.jpg" onclick="openLightbox(0)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/SNXRk1kj/LINE-ALBUM-2026626-260626-11.jpg" onclick="openLightbox(1)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/657qtbtx/LINE-ALBUM-2026626-260626-2.jpg" onclick="openLightbox(2)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/5NHybKbd/LINE-ALBUM-2026626-260626-3.jpg" onclick="openLightbox(3)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/ZK9n4s4h/LINE-ALBUM-2026626-260626-4.jpg" onclick="openLightbox(4)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/xTk8npn2/LINE-ALBUM-2026626-260626-5.jpg" onclick="openLightbox(5)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/PrLJTVTt/LINE-ALBUM-2026626-260626-7.jpg" onclick="openLightbox(6)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/PrLJTVTd/LINE-ALBUM-2026626-260626-8.jpg" onclick="openLightbox(7)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/RV3h4p44/LINE-ALBUM-2026626-260626-9.jpg" onclick="openLightbox(8)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/cJYZbPRV/LINE-ALBUM-2026626-260626-1.jpg" onclick="openLightbox(9)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+          </div>
+
+          <!-- 第二組：完全複製，達成無縫循環 -->
+          <div class="flex h-full gap-3 pr-3 shrink-0">
+            <img src="https://i.postimg.cc/bNGrpVpN/LINE-ALBUM-2026626-260626-10.jpg" onclick="openLightbox(0)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/SNXRk1kj/LINE-ALBUM-2026626-260626-11.jpg" onclick="openLightbox(1)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/657qtbtx/LINE-ALBUM-2026626-260626-2.jpg" onclick="openLightbox(2)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/5NHybKbd/LINE-ALBUM-2026626-260626-3.jpg" onclick="openLightbox(3)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/ZK9n4s4h/LINE-ALBUM-2026626-260626-4.jpg" onclick="openLightbox(4)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/xTk8npn2/LINE-ALBUM-2026626-260626-5.jpg" onclick="openLightbox(5)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/PrLJTVTt/LINE-ALBUM-2026626-260626-7.jpg" onclick="openLightbox(6)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/PrLJTVTd/LINE-ALBUM-2026626-260626-8.jpg" onclick="openLightbox(7)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/RV3h4p44/LINE-ALBUM-2026626-260626-9.jpg" onclick="openLightbox(8)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+            <img src="https://i.postimg.cc/cJYZbPRV/LINE-ALBUM-2026626-260626-1.jpg" onclick="openLightbox(9)" class="h-full w-auto object-cover rounded-2xl shadow-md cursor-pointer transition-transform duration-300 hover:scale-[1.03] select-none" alt="Wedding Photo">
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. 出席回函 -->
+  <section id="rsvp" class="py-24 px-4 sm:px-6 bg-morandi-lightgreen/30 relative">
+    <div class="max-w-3xl mx-auto">
+      <div class="text-center mb-12">
+        <span class="font-eng text-xs sm:text-sm tracking-[0.3em] text-morandi-gold block mb-3">INVITATION RESPONSE</span>
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold tracking-widest text-morandi-dark">出席回函</h2>
+      </div>
+      <div class="bg-white p-5 sm:p-8 md:p-12 rounded-3xl shadow-lg border border-stone-100">
+        <!-- Iframe 用來防 Google 表單重導向 -->
+        <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+        
+        <form action="https://docs.google.com/forms/d/e/1FAIpQLSeV2ozP86M5SgcXehgATweJd14JpH-d0P0RBMS_Aj_E-LLWuA/formResponse" method="POST" target="hidden_iframe" id="rsvp-form" class="space-y-6">
+          
+          <input type="hidden" name="pageHistory" value="0,1">
+
+          <!-- 姓名 -->
+          <div>
+            <label for="name" class="block text-xs sm:text-sm font-medium text-stone-700 tracking-wider mb-2">賓客姓名 <span class="text-red-400">*</span></label>
+            <input type="text" id="name" name="entry.392636114" required class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-morandi-gold focus:ring-1 focus:ring-morandi-gold/30 transition-all text-stone-800 text-[16px] md:text-sm bg-stone-50/50" placeholder="請輸入您的真實姓名">
+          </div>
+
+          <!-- 與新人的關係 -->
+          <div>
+            <label for="relation" class="block text-xs sm:text-sm font-medium text-stone-700 tracking-wider mb-2">與新人的關係 <span class="text-red-400">*</span></label>
+            <select id="relation" name="entry.2010140986" required class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-morandi-gold focus:ring-1 focus:ring-morandi-gold/30 transition-all text-stone-800 text-[16px] md:text-sm bg-stone-50/50">
+              <option value="" disabled selected>請選擇關係分類</option>
+              <option value="男方家人親戚">男方家人親戚</option>
+              <option value="男方同學親友">男方同學親友</option>
+              <option value="男方客戶">男方客戶</option>
+              <option value="女方家人親戚">女方家人親戚</option>
+              <option value="女方同學親友">女方同學親友</option>
+              <option value="女方同事">女方同事</option>
+            </select>
+          </div>
+
+          <!-- 出席意願 -->
+          <div>
+            <label for="attendance" class="block text-xs sm:text-sm font-medium text-stone-700 tracking-wider mb-2">出席意願 <span class="text-red-400">*</span></label>
+            <select id="attendance" name="entry.698153561" required onchange="toggleAttendanceDependents(this)" class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-morandi-gold focus:ring-1 focus:ring-morandi-gold/30 transition-all text-stone-800 text-[16px] md:text-sm bg-stone-50/50">
+              <option value="" disabled selected>請選擇出席狀態</option>
+              <option value="一定出席!! 到場見證幸福時刻!!">一定出席！期待見證幸福</option>
+              <option value="無法出席，但我致上最真誠的祝福">無法出席，但我致上最真誠的祝福</option>
+            </select>
+          </div>
+
+          <!-- 出席人數相關區塊（CSS Grid 高度過渡） -->
+          <div id="attendance-details-block" class="expand-transition expand-transition-active">
+            <div class="expand-inner space-y-6">
+              <!-- 成成人數 -->
+              <div>
+                <label for="adults" class="block text-xs sm:text-sm font-medium text-stone-700 tracking-wider mb-2">出席的「成人」人數 <span class="text-red-400">*</span></label>
+                <select id="adults" name="entry.560070515" class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-morandi-gold focus:ring-1 focus:ring-morandi-gold/30 transition-all text-stone-800 text-[16px] md:text-sm bg-stone-50/50">
+                  <option value="0">0 人</option>
+                  <option value="1" selected>1 人</option>
+                  <option value="2">2 人</option>
+                  <option value="3">3 人</option>
+                  <option value="4">4 人</option>
+                  <option value="5">5 人</option>
+                  <option value="6">6 人</option>
+                </select>
+              </div>
+
+              <!-- 兒童人數 -->
+              <div>
+                <label for="children" class="block text-xs sm:text-sm font-medium text-stone-700 tracking-wider mb-2">出席的「兒童」人數</label>
+                <select id="children" name="entry.1171443163" class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-morandi-gold focus:ring-1 focus:ring-morandi-gold/30 transition-all text-stone-800 text-[16px] md:text-sm bg-stone-50/50">
+                  <option value="0" selected>0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+              </div>
+
+              <!-- 兒童座椅需求 -->
+              <div>
+                <label for="highchair" class="block text-xs sm:text-sm font-medium text-stone-700 tracking-wider mb-2">兒童座椅與餐具需求數量</label>
+                <select id="highchair" name="entry.419427243" class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-morandi-gold focus:ring-1 focus:ring-morandi-gold/30 transition-all text-stone-800 text-[16px] md:text-sm bg-stone-50/50">
+                  <option value="0" selected>不需要</option>
+                  <option value="1">1 套</option>
+                  <option value="2">2 套</option>
+                  <option value="3">3 套</option>
+                </select>
+              </div>
+
+              <!-- 吃素人數 -->
+              <div>
+                <label for="vegetarian" class="block text-xs sm:text-sm font-medium text-stone-700 tracking-wider mb-2">吃素的人數</label>
+                <select id="vegetarian" name="entry.863062169" class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-morandi-gold focus:ring-1 focus:ring-morandi-gold/30 transition-all text-stone-800 text-[16px] md:text-sm bg-stone-50/50">
+                  <option value="0" selected>全葷食</option>
+                  <option value="1">1 人素食</option>
+                  <option value="2">2 人素食</option>
+                  <option value="3">3 人素食</option>
+                  <option value="4">4 人素食</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 喜帖發送 -->
+          <div>
+            <label for="invitation" class="block text-xs sm:text-sm font-medium text-stone-700 tracking-wider mb-2">喜帖發送方式 <span class="text-red-400">*</span></label>
+            <select id="invitation" name="entry.1090216026" required onchange="toggleAddressField(this)" class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-morandi-gold focus:ring-1 focus:ring-morandi-gold/30 transition-all text-stone-800 text-[16px] md:text-sm bg-stone-50/50">
+              <option value="" disabled selected>請選擇喜帖發送需求</option>
+              <option value="我想收到紙本喜帖">我想收到紙本喜帖 (請於下方填寫地址)</option>
+              <option value="我想收到電子喜帖">我想收到電子喜帖</option>
+              <option value="不需要喜帖">不需要喜帖</option>
+            </select>
+          </div>
+
+          <!-- 寄送地址（CSS Grid 高度過渡） -->
+          <div id="address-block" class="expand-transition">
+            <div class="expand-inner">
+              <div class="pb-4">
+                <label for="address" class="block text-xs sm:text-sm font-medium text-stone-700 tracking-wider mb-2">寄送地址 <span id="address-req" class="text-red-400">*</span></label>
+                <input type="text" id="address" name="entry.2035116122" class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-morandi-gold focus:ring-1 focus:ring-morandi-gold/30 transition-all text-stone-800 text-[16px] md:text-sm bg-stone-50/50" placeholder="如：高雄市苓雅區四維三路33號">
+              </div>
+            </div>
+          </div>
+
+          <!-- 聯絡資訊 -->
+          <div id="contact-block">
+            <label for="contact" class="block text-xs sm:text-sm font-medium text-stone-700 tracking-wider mb-2">您的 Email / Line ID <span class="text-[10px] sm:text-xs text-stone-400 font-normal tracking-wide block md:inline md:ml-1">(如有電子喜帖需求記得填寫喔)</span></label>
+            <input type="text" id="contact" name="entry.1418643148" class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-morandi-gold focus:ring-1 focus:ring-morandi-gold/30 transition-all text-stone-800 text-[16px] md:text-sm bg-stone-50/50" placeholder="請輸入方便與您聯絡的管道">
+          </div>
+
+          <!-- 祝賀語 -->
+          <div>
+            <label for="blessing" class="block text-xs sm:text-sm font-medium text-stone-700 tracking-wider mb-2">給新人的真摯祝賀語</label>
+            <textarea id="blessing" name="entry.1758313466" rows="3" class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-morandi-gold focus:ring-1 focus:ring-morandi-gold/30 transition-all text-stone-800 text-[16px] md:text-sm bg-stone-50/50" placeholder="您的每一句祝福，我們都將珍藏於心"></textarea>
+          </div>
+
+          <!-- 送出按鈕 -->
+          <div class="pt-4">
+            <button type="submit" id="submit-btn" class="w-full btn-primary py-4 px-6 rounded-xl font-medium tracking-[0.2em] uppercase focus:outline-none focus:ring-2 focus:ring-morandi-gold/40 text-xs sm:text-sm flex items-center justify-center gap-2">
+              <i class="fa-regular fa-paper-plane"></i> 確認送出回函
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. 背景音樂控制 -->
+  <div class="fixed bottom-6 right-6 z-[80] flex items-center justify-center">
+    <audio id="bg-music" src="https://raw.githubusercontent.com/stevenliz0808/expense-tracker/main/the_mountain-wedding-522480.mp3" loop></audio>
+    <button onclick="toggleMusic()" id="music-btn" class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white/90 border border-morandi-gold/30 shadow-lg backdrop-blur-md flex items-center justify-center text-morandi-gold hover:text-morandi-gold/80 transition-all text-base sm:text-lg active:scale-95" title="播放浪漫音樂">
+      <i id="music-icon" class="fa-solid fa-compact-disc"></i>
+    </button>
+    <span id="music-tooltip" class="absolute right-14 bg-white/90 border border-morandi-gold/20 text-morandi-dark text-[10px] sm:text-xs py-1.5 px-3 rounded-lg shadow-sm backdrop-blur-md whitespace-nowrap opacity-100 transition-opacity duration-1000">
+      🎵 點擊播放優雅背景音樂
+    </span>
+  </div>
+
+  <!-- 9. 頁尾 -->
+  <footer class="py-12 bg-morandi-dark text-stone-300 text-center px-4">
+    <div class="max-w-6xl mx-auto space-y-4">
+      <p class="font-eng text-xl sm:text-2xl font-light tracking-widest text-morandi-gold">Chao Yi &amp; Yi wen</p>
+      <div class="w-12 h-[1px] bg-stone-600 mx-auto"></div>
+      <p class="text-[10px] sm:text-xs tracking-widest text-stone-400">Wedding Date: 2026.12.12 | <span class="no-wrap">Kaohsiung Han-Hsien International Hotel</span></p>
+    </div>
+  </footer>
+
+  <!-- 10. 提交成功 Modal -->
+  <div id="thankyou-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white p-6 sm:p-8 md:p-10 rounded-3xl max-w-md w-full text-center space-y-5 sm:space-y-6 transform scale-95 transition-transform duration-300 shadow-2xl border border-morandi-gold/10">
+      <div class="w-12 h-12 sm:w-16 sm:h-16 bg-morandi-lightgreen/80 text-morandi-green rounded-full flex items-center justify-center mx-auto text-2xl sm:text-3xl">
+        <i class="fa-solid fa-heart-circle-check"></i>
+      </div>
+      <h4 class="text-lg sm:text-xl md:text-2xl font-semibold tracking-wider text-morandi-dark">回函送出成功！</h4>
+      <p class="text-xs sm:text-sm md:text-base leading-relaxed text-stone-600 tracking-widest">
+        最親愛的朋友，我們已收到您的出席回覆與誠摯的祝福。<br>期待與您相見！
+      </p>
+      <div class="w-full bg-morandi-cream/50 p-3 sm:p-4 rounded-xl border border-stone-50 text-[10px] sm:text-xs text-stone-400 text-left space-y-1">
+        <p>✨ 溫馨提醒：當天歡迎提早於 <span class="no-wrap">17:00</span> 抵達享受拍貼時光！</p>
+      </div>
+      <button onclick="closeModal()" class="w-full py-2.5 sm:py-3 bg-morandi-gold hover:bg-morandi-gold/90 text-white font-medium text-xs sm:text-sm rounded-xl transition-all shadow-md">關閉視窗</button>
+    </div>
+  </div>
+
+  <!-- 11. 燈箱元件 (Lightbox) -->
+  <div id="lightbox" class="fixed inset-0 bg-black/95 z-[200] hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+    <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white hover:text-morandi-gold text-2xl z-[210] focus:outline-none" aria-label="Close Lightbox">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <button onclick="lightboxPrev()" class="absolute left-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-2xl sm:text-3xl z-[210] focus:outline-none" aria-label="Previous Image">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button onclick="lightboxNext()" class="absolute right-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-2xl sm:text-3xl z-[210] focus:outline-none" aria-label="Next Image">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+    <div id="lightbox-img-wrapper" class="max-w-full max-h-[85vh] flex items-center justify-center">
+      <img id="lightbox-img" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl transform scale-95 transition-transform duration-300" src="" alt="Enlarged Wedding Photo">
+    </div>
+  </div>
+
+  <script>
+    let isSubmitting = false;
+
+    // 相片資料
+    const photoUrls = [
+      "https://i.postimg.cc/bNGrpVpN/LINE-ALBUM-2026626-260626-10.jpg",
+      "https://i.postimg.cc/SNXRk1kj/LINE-ALBUM-2026626-260626-11.jpg",
+      "https://i.postimg.cc/657qtbtx/LINE-ALBUM-2026626-260626-2.jpg",
+      "https://i.postimg.cc/5NHybKbd/LINE-ALBUM-2026626-260626-3.jpg",
+      "https://i.postimg.cc/ZK9n4s4h/LINE-ALBUM-2026626-260626-4.jpg",
+      "https://i.postimg.cc/xTk8npn2/LINE-ALBUM-2026626-260626-5.jpg",
+      "https://i.postimg.cc/PrLJTVTt/LINE-ALBUM-2026626-260626-7.jpg",
+      "https://i.postimg.cc/PrLJTVTd/LINE-ALBUM-2026626-260626-8.jpg",
+      "https://i.postimg.cc/RV3h4p44/LINE-ALBUM-2026626-260626-9.jpg",
+      "https://i.postimg.cc/cJYZbPRV/LINE-ALBUM-2026626-260626-1.jpg"
+    ];
+
+    /* --- 計時器功能 --- */
+    const targetDate = new Date("2026-12-12T17:00:00").getTime();
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+      
+      const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById('days').innerText = Math.max(0, d).toString().padStart(2, '0');
+      document.getElementById('hours').innerText = Math.max(0, h).toString().padStart(2, '0');
+      document.getElementById('minutes').innerText = Math.max(0, m).toString().padStart(2, '0');
+      document.getElementById('seconds').innerText = Math.max(0, s).toString().padStart(2, '0');
+    }
+    updateCountdown(); 
+    setInterval(updateCountdown, 1000);
+
+    /* --- 行動選單開關 --- */
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.getElementById('menu-icon');
+      if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-xmark');
+      } else {
+        menu.classList.add('hidden');
+        icon.classList.remove('fa-xmark');
+        icon.classList.add('fa-bars');
+      }
+    }
+
+    /* --- 音樂控制功能 --- */
+    const music = document.getElementById('bg-music');
+    const musicIcon = document.getElementById('music-icon');
+    const tooltip = document.getElementById('music-tooltip');
+
+    setTimeout(() => {
+      if (tooltip) {
+        tooltip.style.opacity = '0';
+        setTimeout(() => tooltip.remove(), 1000);
+      }
+    }, 5000);
+
+    function toggleMusic() {
+      if (music.paused) {
+        music.play().then(() => {
+          musicIcon.classList.add('animate-spin-slow');
+        }).catch(() => {});
+      } else {
+        music.pause();
+        musicIcon.classList.remove('animate-spin-slow');
+      }
+    }
+
+    /* --- 燈箱系統 --- */
+    let lightboxIndex = 0;
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+
+    function openLightbox(index) {
+      if (!lightbox || !lightboxImg) return;
+      lightboxIndex = index;
+      lightboxImg.src = photoUrls[lightboxIndex];
+      lightbox.classList.remove('hidden');
+      setTimeout(() => {
+        lightbox.classList.add('opacity-100');
+        lightboxImg.classList.remove('scale-95');
+        lightboxImg.classList.add('scale-100');
+      }, 50);
+    }
+
+    function closeLightbox() {
+      if (!lightbox || !lightboxImg) return;
+      lightbox.classList.remove('opacity-100');
+      lightboxImg.classList.add('scale-95');
+      lightboxImg.classList.remove('scale-100');
+      setTimeout(() => {
+        lightbox.classList.add('hidden');
+      }, 300);
+    }
+
+    function lightboxNext() {
+      if (!lightboxImg) return;
+      lightboxIndex = (lightboxIndex + 1) % photoUrls.length;
+      lightboxImg.src = photoUrls[lightboxIndex];
+    }
+
+    function lightboxPrev() {
+      if (!lightboxImg) return;
+      lightboxIndex = (lightboxIndex - 1 + photoUrls.length) % photoUrls.length;
+      lightboxImg.src = photoUrls[lightboxIndex];
+    }
+
+    if (lightbox) {
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox || e.target.id === 'lightbox-img-wrapper') {
+          closeLightbox();
+        }
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (lightbox && !lightbox.classList.contains('hidden')) {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') lightboxNext();
+        if (e.key === 'ArrowLeft') lightboxPrev();
+      }
+    });
+
+    /* --- 交通資訊手風琴 --- */
+    function toggleAccordion(button) {
+      const item = button.closest('.accordion-item');
+      const content = item.querySelector('.accordion-content');
+      const isOpen = item.classList.contains('accordion-active');
+      
+      document.querySelectorAll('.accordion-item').forEach(el => { 
+        el.classList.remove('accordion-active'); 
+        el.querySelector('.accordion-content').style.maxHeight = null; 
+      });
+      
+      if(!isOpen) { 
+        item.classList.add('accordion-active'); 
+        content.style.maxHeight = content.scrollHeight + "px"; 
+      }
+    }
+
+    /* --- 表單動態高度平滑展開優化 --- */
+    function toggleAttendanceDependents(select) {
+      const block = document.getElementById('attendance-details-block');
+      const adults = document.getElementById('adults');
+      const children = document.getElementById('children');
+      const highchair = document.getElementById('highchair');
+      const vegetarian = document.getElementById('vegetarian');
+      
+      if (select.value === "無法出席，但我致上最真誠的祝福") {
+        block.classList.remove('expand-transition-active');
+        adults.required = false;
+        
+        adults.value = "0";
+        if (children) children.value = "0";
+        if (highchair) highchair.value = "0";
+        if (vegetarian) vegetarian.value = "0";
+      } else {
+        block.classList.add('expand-transition-active');
+        adults.required = true;
+        if (adults.value === "0") adults.value = "1";
+      }
+    }
+
+    function toggleAddressField(select) {
+      const addressBlock = document.getElementById('address-block');
+      const addressInput = document.getElementById('address');
+      
+      if (select.value === "我想收到紙本喜帖") {
+        addressBlock.classList.add('expand-transition-active');
+        addressInput.required = true;
+      } else {
+        addressBlock.classList.remove('expand-transition-active');
+        addressInput.required = false;
+        addressInput.value = "";
+      }
+    }
+
+    /* --- 表單安全提交與防跳轉邏輯 --- */
+    function handleIframeLoad() {
+      if (isSubmitting) {
+        openModal();
+        const btn = document.getElementById('submit-btn');
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-regular fa-paper-plane"></i> 確認送出回函`;
+        document.getElementById('rsvp-form').reset();
+        isSubmitting = false;
+        
+        // 重設動態欄位狀態
+        document.getElementById('attendance-details-block').classList.add('expand-transition-active');
+        document.getElementById('address-block').classList.remove('expand-transition-active');
+      }
+    }
+
+    function openModal() { 
+      const modal = document.getElementById('thankyou-modal');
+      modal.classList.remove('opacity-0', 'pointer-events-none'); 
+      modal.querySelector('div').classList.remove('scale-95');
+      modal.querySelector('div').classList.add('scale-100');
+    }
+
+    function closeModal() { 
+      const modal = document.getElementById('thankyou-modal');
+      modal.classList.add('opacity-0', 'pointer-events-none'); 
+      modal.querySelector('div').classList.add('scale-95');
+      modal.querySelector('div').classList.remove('scale-100');
+    }
+
+    /* --- 初始化與事件綁定 --- */
+    window.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('rsvp-form');
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          const btn = document.getElementById('submit-btn');
+          isSubmitting = true;
+          btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> 回函傳送中...`;
+          setTimeout(() => {
+            btn.disabled = true;
+          }, 10);
+        });
+      }
+
+      const iframe = document.getElementById('hidden_iframe');
+      if (iframe) {
+        iframe.addEventListener('load', handleIframeLoad);
+      }
+
+      const autoPlayEvents = ['click', 'touchstart', 'keydown', 'scroll'];
+      function autoPlayMusic() {
+        if (music.paused) {
+          music.play().then(() => {
+            musicIcon.classList.add('animate-spin-slow');
+          }).catch(() => {});
+        }
+        autoPlayEvents.forEach(evt => document.removeEventListener(evt, autoPlayMusic));
+      }
+      autoPlayEvents.forEach(evt => document.addEventListener(evt, autoPlayMusic, { once: true, passive: true }));
+    });
+  </script>
+</body>
+</html>
